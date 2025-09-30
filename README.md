@@ -5,4 +5,5 @@ Universidade Federal de Sergipe - UFS.
 EQUIPE: Francisco Farias Gomes, Silas Lopes Santos Silva Amancio do Vale, Luciano Torres Marques, Ramon Adller de Santana
 
 Tema do Seminário: Árvore Binária de Busca Ótima
-Linka para o vídeo Youtube: https://www.youtube.com/watch?v=h0QbXmwwiFI
+
+Link para o vídeo Youtube: https://www.youtube.com/watch?v=h0QbXmwwiFI
