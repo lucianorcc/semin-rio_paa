@@ -1,4 +1,4 @@
-Repositório dos arquivos do Seminário da disciplina PAA - Projeto de Análise de Algoritmo.
+Repositório dos arquivos do Seminário da disciplina PAA - Projeto e Análise de Algoritmo.
 Mestrado em Ciência da Computação - PROCC
 Universidade Federal de Sergipe - UFS.
 
