@@ -1,101 +1,200 @@
-# ================================================================
-# ÁRVORE BINÁRIA DE BUSCA ÓTIMA (Optimal Binary Search Tree - OBST)
-# Implementação baseada no livro de Cormen, com comentários
-# ================================================================
+# bst_words_interactive_commented.py
+# Exemplo didático: Árvore Binária de Busca (BST) com pausas interativas
+# Conjunto de palavras: Bola, Amor, Casa, Carro, Fruta, Gato
+# ------------------------------------------------------------
+# Este código mostra como a BST é construída, como funciona a
+# inserção, a busca e as travessias, e ainda conta o custo
+# (número de comparações ou visitas) de cada operação.
+# ------------------------------------------------------------
 
-# Chaves em ordem alfabética:
-# Amor < Carro < Xilofone < Zebra
-keys = ["Amor", "Carro", "Xilofone", "Zebra"]
+from typing import Optional, Tuple
 
-# Probabilidades de acesso (sucesso na busca de cada chave)
-p = [0.40, 0.30, 0.10, 0.20]
-n = len(keys)
+# ============================================================
+# Classe Node
+# Representa cada nó da árvore.
+# Exemplo: Node("Bola") cria um nó com a chave "Bola".
+# ============================================================
+class Node:
+    def __init__(self, key: str):
+        self.key: str = key
+        self.left: Optional['Node'] = None   # filho à esquerda (chaves menores)
+        self.right: Optional['Node'] = None  # filho à direita (chaves maiores)
 
-# ================================================================
-# Passo 1: Inicializar matrizes
-# ================================================================
-e = [[0.0 for _ in range(n+2)] for _ in range(n+2)]
-w = [[0.0 for _ in range(n+2)] for _ in range(n+2)]
-root = [[0   for _ in range(n+2)] for _ in range(n+2)]
+    def __repr__(self):
+        return f"Node({self.key!r})"
 
-# ================================================================
-# Passo 2: Casos base
-# ================================================================
 
-# Este laço percorre todas as chaves da lista "keys".
-# No Python, range(1, n+1) gera os números de 1 até n (inclusive).
-# n → número de chaves.
-# p[i] → probabilidade (ou frequência) da chave i+1 ser pesquisada.
-# e[i][j] → custo esperado mínimo de busca para o intervalo de chaves entre i e j.
-# w[i][j] → soma das probabilidades das chaves do intervalo [i, j].
-# root[i][j] → índice da chave escolhida como raiz ótima para o intervalo [i, j].
-# No caso base, o intervalo [i, i] contém apenas 1 chave → ou seja, a árvore é só essa chave.
-for i in range(1, n+1):
+# ============================================================
+# Função insert
+# Insere uma nova palavra na BST.
+# Retorna a raiz da árvore e o custo (nº de comparações).
+# Exemplo: inserir "Amor" depois de "Bola" → 2 comparações.
+# ============================================================
+def insert(root: Optional[Node], key: str) -> Tuple[Node, int]:
+    cost = 0
+    if root is None:
+        return Node(key), 1  # custo 1 (checou raiz vazia)
 
-    # e[i][i] representa o custo esperado de busca de uma árvore que
-    # contém apenas a chave "i".
-    # Se existe apenas uma chave, ela é a raiz e está no nível 1.
-    # O custo nesse caso é simplesmente a probabilidade dessa chave.
-    e[i][i] = p[i-1]
+    cur = root
+    while True:
+        cost += 1
+        if key < cur.key:
+            # Palavra é menor → segue para a esquerda
+            if cur.left is None:
+                cur.left = Node(key)
+                cost += 1  # comparação final ao inserir
+                break
+            else:
+                cur = cur.left
+        elif key > cur.key:
+            # Palavra é maior → segue para a direita
+            if cur.right is None:
+                cur.right = Node(key)
+                cost += 1
+                break
+            else:
+                cur = cur.right
+        else:
+            # Palavra já existe → não insere duplicatas
+            break
+    return root, cost
 
-    # w[i][i] representa o "peso total" do intervalo [i, i],
-    # ou seja, a soma das probabilidades das chaves dentro do intervalo.
-    # Como aqui só existe uma chave, o peso é a própria probabilidade.
-    w[i][i] = p[i-1]
 
-    # root[i][i] indica qual chave é escolhida como raiz do intervalo [i, i].
-    # Se só existe uma chave, a raiz só pode ser ela mesma.
-    root[i][i] = i
+# ============================================================
+# Função search
+# Busca uma palavra na BST.
+# Retorna (nó encontrado ou None, custo em comparações).
+# Exemplo: buscar "Fruta" percorre Bola → Casa → Fruta (3 passos).
+# ============================================================
+def search(root: Optional[Node], key: str) -> Tuple[Optional[Node], int]:
+    cur = root
+    cost = 0
+    while cur is not None:
+        cost += 1
+        if key == cur.key:
+            return cur, cost
+        elif key < cur.key:
+            cur = cur.left
+        else:
+            cur = cur.right
+    return None, cost
 
-# ================================================================
-# Passo 3: Preencher tabelas
-# ================================================================
-for l in range(2, n+1):             # l = tamanho do subintervalo
-    for i in range(1, n-l+2):       # i = início do intervalo
-        j = i + l - 1               # j = fim do intervalo
-        e[i][j] = float("inf")      # inicializa com infinito
-        w[i][j] = w[i][j-1] + p[j-1]  # soma dos pesos até j
 
-        for k in range(i, j+1):     # testamos cada chave como raiz
-            cost = ( (e[i][k-1] if k > i else 0) +
-                     (e[k+1][j] if k < j else 0) +
-                     w[i][j] )
-            if cost < e[i][j]:      # guardamos o menor custo
-                e[i][j] = cost
-                root[i][j] = k      # registramos quem foi a raiz
+# ============================================================
+# Travessia inorder
+# Visita nós na ordem crescente (alfabética).
+# Exemplo: ['Amor', 'Bola', 'Carro', 'Casa', 'Fruta', 'Gato'].
+# Custo = nº de visitas.
+# ============================================================
+def inorder(root: Optional[Node], visit, cost=0) -> int:
+    if root:
+        cost = inorder(root.left, visit, cost)
+        visit(root)
+        cost += 1
+        cost = inorder(root.right, visit, cost)
+    return cost
 
-# ================================================================
-# Passo 4: Reconstrução da árvore com níveis e custo individual
-# ================================================================
-def build_tree(i, j, nivel=1, parent=None, side=None):
-    if i > j:
+
+# ============================================================
+# Travessia preorder
+# Visita raiz antes dos filhos.
+# Útil para salvar/serializar a árvore.
+# ============================================================
+def preorder(root: Optional[Node], visit, cost=0) -> int:
+    if root:
+        visit(root)
+        cost += 1
+        cost = preorder(root.left, visit, cost)
+        cost = preorder(root.right, visit, cost)
+    return cost
+
+
+# ============================================================
+# Travessia postorder
+# Visita filhos antes da raiz.
+# Útil para remover todos os nós da árvore.
+# ============================================================
+def postorder(root: Optional[Node], visit, cost=0) -> int:
+    if root:
+        cost = postorder(root.left, visit, cost)
+        cost = postorder(root.right, visit, cost)
+        visit(root)
+        cost += 1
+    return cost
+
+
+# ============================================================
+# Função pretty_print
+# Imprime a árvore em formato hierárquico.
+# Exemplo esperado com as palavras:
+# `- Bola
+#    |- Amor
+#    `- Casa
+#       |- Carro
+#       `- Fruta
+#          `- Gato
+# ============================================================
+def pretty_print(root: Optional[Node], indent: str = "", last: bool = True):
+    if root is None:
         return
-    r = root[i][j]                  # raiz ótima desse intervalo
-    node = keys[r-1]                # nome da chave
-    prob = p[r-1]                   # sua probabilidade
-    custo_individual = round(prob * nivel, 2)  # custo local = p * profundidade
+    print(indent, "`- " if last else "|- ", root.key, sep="")
+    indent += "   " if last else "|  "
+    if root.left or root.right:
+        if root.left:
+            pretty_print(root.left, indent, False if root.right else True)
+        else:
+            print(indent + "|- " + "∅")  # ∅ = vazio
+        if root.right:
+            pretty_print(root.right, indent, True)
 
-    if parent is None:
-        print(f"Raiz: {node} (nível {nivel}, custo {custo_individual})")
-    else:
-        print(f"{side} de {parent}: {node} (nível {nivel}, custo {custo_individual})")
 
-    # recursivamente constrói as subárvores esquerda e direita
-    build_tree(i, r-1, nivel+1, node, "esquerda")
-    build_tree(r+1, j, nivel+1, node, "direita")
+# ============================================================
+# Programa principal (main)
+# Constrói a árvore com as palavras dadas,
+# mostra as inserções passo a passo,
+# depois imprime travessias e buscas.
+# ============================================================
+if __name__ == "__main__":
+    words_insert_order = ["Bola", "Amor", "Casa", "Carro", "Fruta", "Gato"]
 
-# ================================================================
-# Passo 5: Exibir resultados
-# ================================================================
-print("Matriz de custos e[i][j]:")
-for row in e[1:n+1]:
-    print([round(x,2) if x != float("inf") else "∞" for x in row[1:n+1]])
+    root = None
+    print("Inserções na ordem:", words_insert_order)
+    input("Pressione Enter para começar as inserções...")
 
-print("\nMatriz de raízes root[i][j]:")
-for row in root[1:n+1]:
-    print(row[1:n+1])
+    # Inserção interativa
+    for w in words_insert_order:
+        root, cost = insert(root, w)
+        print(f"Inserido {w} com custo {cost}")
+        pretty_print(root)
+        input("Pressione Enter para continuar...")
 
-print("\nÁrvore ótima:")
-build_tree(1, n)
+    print("\nEstrutura final da árvore BST:")
+    pretty_print(root)
+    input("\nPressione Enter para iniciar as travessias...")
 
-print("\nCusto esperado ótimo =", round(e[1][n], 2))
+    # Travessias com custo
+    inorder_list = []
+    cost_in = inorder(root, lambda n: inorder_list.append(n.key))
+    print("In-order (ordenado):", inorder_list, f"(custo {cost_in})")
+    input("Pressione Enter...")
+
+    pre_list = []
+    cost_pre = preorder(root, lambda n: pre_list.append(n.key))
+    print("Pre-order:", pre_list, f"(custo {cost_pre})")
+    input("Pressione Enter...")
+
+    post_list = []
+    cost_post = postorder(root, lambda n: post_list.append(n.key))
+    print("Post-order:", post_list, f"(custo {cost_post})")
+    input("Pressione Enter...")
+
+    # Buscas interativas
+    print("\nBuscas de exemplo:")
+    for q in ["Fruta", "Xingar", "Amor", "Gato"]:
+        node, cost = search(root, q)
+        if node:
+            print(f"Busca por '{q}': encontrada (custo {cost})")
+        else:
+            print(f"Busca por '{q}': não encontrada (custo {cost})")
+        input("Pressione Enter para próxima busca...")
+   
