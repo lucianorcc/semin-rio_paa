@@ -4,11 +4,11 @@
 # ================================================================
 
 # Chaves em ordem alfabética:
-# Amor < Carro < Xilofone < Zebra
-keys = ["Amor", "Carro", "Xilofone", "Zebra"]
+# Amor < Bola < Carro < Casa < Fruta < Gato
+keys = ["Amor", "Bola", "Carro", "Casa", "Fruta", "Gato"]
 
 # Probabilidades de acesso (sucesso na busca de cada chave)
-p = [0.40, 0.30, 0.10, 0.20]
+p = [0.05, 0.25, 0.10, 0.15, 0.30, 0.15]
 n = len(keys)
 
 # ================================================================
@@ -81,15 +81,15 @@ def build_tree(i, j, nivel=1, parent=None, side=None):
 # ================================================================
 # Passo 5: Exibir resultados
 # ================================================================
-print("Matriz de custos e[i][j]:")
+print("MATRIZ DE CUSTOS e[i][j]:")
 for row in e[1:n+1]:
     print([round(x,2) if x != float("inf") else "∞" for x in row[1:n+1]])
 
-print("\nMatriz de raízes root[i][j]:")
+print("\nMATRIZ DE RAÍZES root[i][j]:")
 for row in root[1:n+1]:
     print(row[1:n+1])
 
-print("\nÁrvore ótima:")
+print("\nÁRVORE ÓTIMA:")
 build_tree(1, n)
 
-print("\nCusto esperado ótimo =", round(e[1][n], 2))
+print("\nCUSTO ESPERADO ÓTIMO =", round(e[1][n], 2))
