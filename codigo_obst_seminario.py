@@ -4,11 +4,11 @@
 # ================================================================
 
 # Chaves em ordem alfabética:
-# Amor < Bola < Carro < Casa < Fruta < Gato
-keys = ["Amor", "Bola", "Carro", "Casa", "Fruta", "Gato"]
+# Amor < Carro < Xilofone < Zebra
+keys = ["Amor", "Carro", "Xilofone", "Zebra"]
 
 # Probabilidades de acesso (sucesso na busca de cada chave)
-p = [0.05, 0.25, 0.10, 0.15, 0.30, 0.15]
+p = [0.40, 0.30, 0.10, 0.20]
 n = len(keys)
 
 # ================================================================
@@ -24,6 +24,12 @@ root = [[0   for _ in range(n+2)] for _ in range(n+2)]
 
 # Este laço percorre todas as chaves da lista "keys".
 # No Python, range(1, n+1) gera os números de 1 até n (inclusive).
+# n → número de chaves.
+# p[i] → probabilidade (ou frequência) da chave i+1 ser pesquisada.
+# e[i][j] → custo esperado mínimo de busca para o intervalo de chaves entre i e j.
+# w[i][j] → soma das probabilidades das chaves do intervalo [i, j].
+# root[i][j] → índice da chave escolhida como raiz ótima para o intervalo [i, j].
+# No caso base, o intervalo [i, i] contém apenas 1 chave → ou seja, a árvore é só essa chave.
 for i in range(1, n+1):
 
     # e[i][i] representa o custo esperado de busca de uma árvore que
@@ -81,15 +87,15 @@ def build_tree(i, j, nivel=1, parent=None, side=None):
 # ================================================================
 # Passo 5: Exibir resultados
 # ================================================================
-print("MATRIZ DE CUSTOS e[i][j]:")
+print("Matriz de custos e[i][j]:")
 for row in e[1:n+1]:
     print([round(x,2) if x != float("inf") else "∞" for x in row[1:n+1]])
 
-print("\nMATRIZ DE RAÍZES root[i][j]:")
+print("\nMatriz de raízes root[i][j]:")
 for row in root[1:n+1]:
     print(row[1:n+1])
 
-print("\nÁRVORE ÓTIMA:")
+print("\nÁrvore ótima:")
 build_tree(1, n)
 
-print("\nCUSTO ESPERADO ÓTIMO =", round(e[1][n], 2))
+print("\nCusto esperado ótimo =", round(e[1][n], 2))
