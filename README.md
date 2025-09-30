@@ -1,7 +1,12 @@
 Repositório dos arquivos do Seminário da disciplina PAA - Projeto de Análise de Algoritmo.
-Mestrado em Ciência da Computação
+Mestrado em Ciência da Computação - PROCC
 Universidade Federal de Sergipe - UFS.
-PROCC
+
+EQUIPE:
+Francisco Farias Gomes
+Silas Lopes Santos Silva Amancio do Vale
+Luciano Torres Marques
+Ramon Adller de Santana
 
 Tema do Seminário: Árvore Binária de Busca Ótima
 Linka para o vídeo Youtube: https://www.youtube.com/watch?v=h0QbXmwwiFI
