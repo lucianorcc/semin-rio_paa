@@ -6,4 +6,4 @@ EQUIPE: Francisco Farias Gomes, Silas Lopes Santos Silva Amancio do Vale, Lucian
 
 Tema do Seminário: Árvore Binária de Busca Ótima
 
-Link para o vídeo Youtube: https://www.youtube.com/watch?v=h0QbXmwwiFI
+Link para o vídeo sobre OBST no Youtube: https://www.youtube.com/watch?v=vHSR3tmG3y4
